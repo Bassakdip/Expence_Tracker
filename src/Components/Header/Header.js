@@ -1,6 +1,24 @@
 import React from 'react'
+import './Header.css';
+import { Link, useNavigate } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import {auth} from '../../firebase';
 
 const Header = () => {
+    const user = auth.currentUser;
+    const navigate = useNavigate();
+
+    const logoutHandler = async () => {
+        try {
+            await signOut(auth);
+            navigate("/login");
+            console.log(user);
+            alert("Signout successfully");
+        } catch (err) {
+            alert(err.message);
+        }
+    };
+
     return (
         <nav class="navbar navbar-expand-lg">
             <div class="container-fluid">
@@ -17,12 +35,16 @@ const Header = () => {
                         <li class="nav-item">
                             <a class="nav-link active" href="/products">Products</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" href="/signup">signUp</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" href="/login">login</a>
-                        </li>
+                        <div>
+                            {user ? (
+                                <button className="signupButton" onClick={logoutHandler}>Logout</button>
+                            ) : (
+                                <>
+                                    <Link to='/login' className="loginButton">Login</Link>
+                                    <Link to="/signup" className="signupButton">Signup</Link>
+                                </>
+                            )}
+                        </div>
                     </ul>
                 </div>
             </div>
