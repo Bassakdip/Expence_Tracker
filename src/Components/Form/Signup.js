@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { auth } from '../../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { sendEmailVerification } from 'firebase/auth';
 
 const Signup = () => {
     const [email, setEmail] = useState("");
@@ -14,11 +15,16 @@ const Signup = () => {
             return;
         }
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
+            const newUser = await createUserWithEmailAndPassword(auth, email, password);
+            await sendEmailVerification(newUser.user);
             alert('Account created successfully');
+            
         } catch (err) {
             alert(err.message);
         }
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("")
     }
 
     return (
